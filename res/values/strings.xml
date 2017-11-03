@@ -1,0 +1,28 @@
+<resources>
+
+    <string name="read_ok">Read completed!</string>
+    <string name="write_ok">Write completed!</string>
+    <string name="read_fail">No response from meter!</string>
+    <string name="load_more">load more ...</string>
+    <string name="no_permission">Permission denied</string>
+    <string name="input_can_not_empty">Input can not be empty</string>
+    <string name="no_search_result">No search result</string>
+     <string name="reading">Readout...</string>
+     <string name="writing">Write...</string>
+    <string name="app_name">smartcard</string>
+    <string name="wating">Please wating</string>
+    <string name="add">Add:</string>
+    <string name="exit_dialog">Press again to exit</string>
+    <string name="home_page">HomePage</string>
+    <string name="dialog_image_camear">Photograph</string>
+    <string name="dialog_image_picture">Choose from Gallery</string>
+    <string name="cancel">cancel</string>
+    <string name="ok">ok</string>
+    <string name="wait">Loading...</string>
+    <string name="read">Read</string>
+    <string name="write">Write</string>
+    <string name="stop">Stop</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+
+</resources>
