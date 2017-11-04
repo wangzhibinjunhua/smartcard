@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="img_text" translatable="false">
+        <item>@string/deposit</item>
+
+    </string-array>
+    
+</resources>

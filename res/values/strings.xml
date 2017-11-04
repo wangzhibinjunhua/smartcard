@@ -1,5 +1,6 @@
 <resources>
 
+<string name="deposit">充值</string>
     <string name="read_ok">Read completed!</string>
     <string name="write_ok">Write completed!</string>
     <string name="read_fail">No response from meter!</string>

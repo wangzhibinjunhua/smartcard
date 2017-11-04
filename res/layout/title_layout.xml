@@ -23,6 +23,7 @@
         android:background="@null"
         android:contentDescription="@string/app_name"
         android:padding="5.0dip"
+        android:visibility="gone"
         />
       <ImageView
         android:id="@+id/title_meterlist"
@@ -34,6 +35,7 @@
         android:contentDescription="@string/app_name"
         android:src="@drawable/meter" 
         android:padding="5.0dip"
+        android:visibility="gone"
         />
 
     <TextView
