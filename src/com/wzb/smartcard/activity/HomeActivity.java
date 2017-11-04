@@ -70,9 +70,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener{
 			switch (arg2) {
 
 			case 0:
-				// intent.setClass(MainActivity.this,
-				// UserManagerActivity.class);
-				// startActivity(intent);
+				 intent.setClass(HomeActivity.this,
+				 UserInfoActivity.class);
+				 startActivity(intent);
 				break;
 
 			default:

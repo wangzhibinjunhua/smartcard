@@ -27,6 +27,15 @@
             android:name=".activity.HomeActivity"
              android:screenOrientation="portrait"
             />
+         
+         <activity
+            android:name=".activity.UserInfoActivity"
+             android:screenOrientation="portrait"
+            />
+         <activity
+            android:name=".activity.DepositActivity"
+             android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

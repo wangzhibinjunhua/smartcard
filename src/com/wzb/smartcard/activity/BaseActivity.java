@@ -16,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.view.Window;
 import android.widget.TextView;
 
+
 public class BaseActivity extends Activity {
 
 	public static BaseActivity instance;

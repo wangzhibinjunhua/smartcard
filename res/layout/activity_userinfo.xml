@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#87CEFA"
+     >
+    
+     <include
+        android:id="@+id/tape_title"
+        layout="@layout/title_layout" />
+     
+      <View
+        android:layout_width="fill_parent"
+        android:layout_height="20dp" />
+      <Button
+        android:id="@+id/btn_read_userinfo"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:text="读取用户信息"
+        android:textSize="20sp" />
+        <View
+        android:layout_width="fill_parent"
+        android:layout_height="10dp" />
+      <TextView
+        android:id="@+id/tv_user_info"
+        android:layout_width="fill_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:text="用户信息" />
+      
+       <View
+        android:layout_width="fill_parent"
+        android:layout_height="50dp" />
+       
+       <Button
+        android:id="@+id/btn_deposit"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:text="充值"
+        android:textSize="20sp" />
+    
+
+</LinearLayout>
