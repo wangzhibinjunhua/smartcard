@@ -2,7 +2,6 @@ package com.wzb.smartcard.interf;
 
 import android.app.Activity;
 import android.app.Application;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -67,8 +66,8 @@ public class WApplication extends Application {
 		super.onCreate();
 
 		CONTEXT = getApplicationContext();
-		sp = new SharedPreferencesUtil(SP_NAME, SharedPreferencesUtil.PRIVATE, CONTEXT);
-		sp_user = new SharedPreferencesUtil("smartcard_user", SharedPreferencesUtil.PRIVATE, CONTEXT);
+		//sp = new SharedPreferencesUtil(SP_NAME, SharedPreferencesUtil.PRIVATE, CONTEXT);
+		//sp_user = new SharedPreferencesUtil("smartcard_user", SharedPreferencesUtil.PRIVATE, CONTEXT);
 		LogUtil.openLog(); // 正式发布请注释此程序语句.
 
 	}
