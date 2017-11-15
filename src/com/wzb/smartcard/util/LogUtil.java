@@ -37,7 +37,7 @@ public class LogUtil {
 
 	public static void logMessage(String tag, String message) {
 		if (logSwitch) {
-			Log.i(tag, printFlag + message);
+			Log.e(tag, printFlag + message);
 		}
 	}
 
