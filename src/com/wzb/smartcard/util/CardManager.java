@@ -10,9 +10,34 @@ public class CardManager {
 
 	public static IccManager iccM = new IccManager();
 	
-	public static byte[] read_card(){
+	public static String read_card(int offset,int len){
+		byte[] rsp=new byte[256];
+		byte[] state=new byte[2];
+		String res = "";
+		String cmd="00B0"+numToHex16(offset)+numToHex8(len);
+		LogUtil.logMessage("wzb", "cmd:"+cmd);
+		int rsp_len=iccM.apduTransmit(Convert.hexStringToByteArray(cmd), Convert.hexStringToByteArray(cmd).length, rsp, state);
+		if(rsp_len<=0){
+			LogUtil.logMessage("wzb", "rsp_len err:"+rsp_len);
+			return res;
+		}
+		LogUtil.logMessage("wzb", "read card rsp len:"+rsp_len);
+		return Convert.bytesToHexString(rsp,0,rsp_len-2);
 		
 	}
+	
+	//使用1字节就可以表示b
+	public static String numToHex8(int b) {
+	        return String.format("%02x", b);//2表示需要两个16进行数
+	    }
+	//需要使用2字节表示b
+	public static String numToHex16(int b) {
+	        return String.format("%04x", b);
+	    }
+	//需要使用4字节表示b
+	public static String numToHex32(int b) {
+	        return String.format("%08x", b);
+	    }
 
 	public static boolean SelectCPU_EF() {
 		boolean resbool = false;
