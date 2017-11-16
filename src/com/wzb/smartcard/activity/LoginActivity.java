@@ -1,17 +1,29 @@
 package com.wzb.smartcard.activity;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.wzb.smartcard.R;
 import com.wzb.smartcard.util.CardManager;
+import com.wzb.smartcard.util.CustomDialog;
 import com.wzb.smartcard.util.LogUtil;
+import com.wzb.smartcard.util.ToastUtil;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import cn.trinea.android.common.util.HttpUtils;
 import junit.framework.Test;
 
@@ -20,29 +32,49 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private Button btn_login;
 	private Button btn_readcard;
 	private EditText et_ps;
-	String result="";
+	private TextView tv_oper_name;
+	private Context mContext;
+	String result = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		mContext = LoginActivity.this;
 		initView();
-		
-		test();
-	}
-	
-	private void test(){
-		String string="6e7249976289544f315e433f8957114890a2a3c00959f1eed8df89efba3d3e6ef295577d0271ea54206c5f1858dfed8688b09917b164c11fe2a2f32271f0853b276680d0ee8c0e248c2c4fa672834dbc07620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c8c9f74c7db2c1aef1b2a8ec88b7ec0a02faa02a36801b34dcc7fc2756963d12b88abf5fccb21eb99124a53cfd66d7e65607620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c8318b2c3f900a14a73fe662088e7275b592e6f744850314cbe6ab669a51886f2cb0204fb9bad8c0124fb3235f486d71b407620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c8c1eecc4f6d8e8c28ffb327db48cab3acc8978089727379366f313504604bf036cfe8f6737ec36500324580f7c70ef58807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c807620c21c04eb9999b9c8231e69840c8e5595e82927128c0c2cff06a530e6027756aa9371e980b74c7f9def77e9ab8995d4a12f05e36b92374ea2ab8a2227327e9a5a663576ae9d7b84b313290511d6193e012a48be4f2810c287cb231573e5ae1ab54630799c0bf16ff29428bc1c5f6a902813426450e07af8d79cca136a16c875195134eaabe8fb1a765e88aa7ef46810e84d13455ae851a5a16dd3658df16ead809b396cc7d10444b1478482af2e8fac582f2476c65770eb43d9a6398a798fa738f7e99e57ab1f0b7bcd166de1ff09baf8e0de272974f254b6afedbf000e91799af6235cedac982c0939638ff7fe6dc2768145512552b";
-		LogUtil.logMessage("wzb", "** len:"+string.length());
 	}
 
 	private void initView() {
 		btn_login = (Button) findViewById(R.id.btn_login);
 		btn_login.setOnClickListener(this);
-		btn_readcard=(Button)findViewById(R.id.btn_read_card);
+		btn_readcard = (Button) findViewById(R.id.btn_read_card);
 		btn_readcard.setOnClickListener(this);
+		tv_oper_name = (TextView) findViewById(R.id.tv_card_user_name);
 	}
+
+	Handler mHander = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case 1001:
+				CustomDialog.dismissDialog();
+				String name=(String)msg.obj;
+				tv_oper_name.setText(name);
+				break;
+			case 1002://start read card
+				CustomDialog.showWaitDialog(mContext, "正在读卡信息...");
+				new Thread(new Runnable() {
+					public void run() {
+						read_card();
+					}
+				}).start();
+				break;
+
+			default:
+				break;
+			}
+		};
+	};
 
 	@Override
 	public void onClick(View v) {
@@ -52,7 +84,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			login();
 			break;
 		case R.id.btn_read_card:
-			read_card();
+			mHander.sendEmptyMessage(1002);
 			break;
 		default:
 			break;
@@ -60,29 +92,35 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		}
 	}
 	
-	private void read_card(){
+	
+
+	private void read_card() {
+
 		Log.e("wzb", "read_card");
-		boolean ret=CardManager.SelectCPU_EF();
-		Log.e("wzb", "ret:"+ret);
-		
-		if(ret){
-			int offset=0;
-			int default_len=200;
-			result="";
+		boolean ret = CardManager.SelectCPU_EF();
+		Log.e("wzb", "ret:" + ret);
+
+		if (ret) {
+			int offset = 0;
+			int default_len = 200;
+			result = "";
 			int i;
-			for(i=0;i<163;i++){
-				String hexstr=CardManager.read_card(offset, default_len);
-				offset+=default_len;
-				LogUtil.logMessage("wzb", "rece:"+hexstr);
-				
-				result+=hexstr;
+			for (i = 0; i < 163; i++) {
+				String hexstr = CardManager.read_card(offset, default_len);
+				offset += default_len;
+				LogUtil.logMessage("wzb", "rece:" + hexstr);
+
+				result += hexstr;
 			}
-			String hexstr=CardManager.read_card(32599, 168);
-			result+=hexstr;
-			LogUtil.logMessage("wzb", "all result:"+result);
-			LogUtil.logMessage("wzb", "all result len:"+result.length());
-			Thread nt=new Thread(netThread);
+			String hexstr = CardManager.read_card(32599, 168);
+			result += hexstr;
+			LogUtil.logMessage("wzb", "all result:" + result);
+			LogUtil.logMessage("wzb", "all result len:" + result.length());
+			Thread nt = new Thread(ReadOperationCard);
 			nt.start();
+		} else {
+			CustomDialog.dismissDialog();
+			ToastUtil.showLongToast(mContext, "读卡失败!");
 		}
 	}
 
@@ -90,16 +128,44 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		LoginActivity.this.startActivity(intent);
-		
-		//finish();
+
+		// finish();
 	}
-	
-	private Thread netThread = new Thread() {
+
+	private Thread ReadOperationCard = new Thread() {
 		public void run() {
-			String url="http://58.251.74.101:6662/jmservice.asmx/ReadOperationCard?s="+result;
-			String res=HttpUtils.httpGetString(url);
-			LogUtil.logMessage("wzb", "netThread res:"+res);
-		};
+			String url = "http://58.251.74.101:6662/jmservice.asmx/ReadOperationCard";
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("s", result);
+			String res = HttpUtils.httpPostString(url, params);
+			LogUtil.logMessage("wzb", "ReadOperationCard res:" + res);
+			if (res == null) {
+				CustomDialog.dismissDialog();
+				ToastUtil.showLongToast(mContext, "读卡失败!");
+			} else {
+				String result_data = res.substring(res.indexOf("{"), res.lastIndexOf("}") + 1);
+				LogUtil.logMessage("wzb", "result:" + result_data);
+				try {
+					JSONObject result_json = new JSONObject(result_data);
+					String operid = result_json.getString("operid");
+					String operName = result_json.getString("operName");
+					String pwd = result_json.getString("pwd");
+					String susccess = result_json.getString("Success");
+					LogUtil.logMessage("wzb", "operid=" + operid);
+					LogUtil.logMessage("wzb", "operName=" + operName);
+					LogUtil.logMessage("wzb", "pwd=" + pwd);
+					LogUtil.logMessage("wzb", "susccess=" + susccess);
+					Message message=mHander.obtainMessage();
+					message.what=1001;
+					message.obj=operName;
+					mHander.sendMessage(message);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
 	};
 
 }

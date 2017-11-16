@@ -33,11 +33,19 @@
         android:layout_width="250dp"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:text="操作员姓名" />
+        android:text="操作员姓名:" />
+    
+     <TextView
+        android:id="@+id/tv_card_user_name"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:textSize="24sp"
+         />
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="50dp" />
+        android:layout_height="10dp" />
 
     <EditText
         android:id="@+id/et_ps"
