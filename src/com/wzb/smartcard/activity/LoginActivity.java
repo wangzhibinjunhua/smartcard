@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.NetworkOnMainThreadException;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,8 +35,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private EditText et_ps;
 	private TextView tv_oper_name;
 	private Context mContext;
-	String result = "";
-
+	private String result = "";
+	private String card_password="";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -51,15 +52,31 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		btn_readcard = (Button) findViewById(R.id.btn_read_card);
 		btn_readcard.setOnClickListener(this);
 		tv_oper_name = (TextView) findViewById(R.id.tv_card_user_name);
+		et_ps=(EditText)findViewById(R.id.et_ps);
+		et_ps.setEnabled(false);
+		btn_login.setEnabled(false);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		et_ps.setText("");
+		et_ps.setEnabled(false);
+		btn_login.setEnabled(false);
+		card_password="";
+		tv_oper_name.setText("");
 	}
 
-	Handler mHander = new Handler() {
+	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			case 1001:
+			case 1001://read ok
 				CustomDialog.dismissDialog();
 				String name=(String)msg.obj;
 				tv_oper_name.setText(name);
+				et_ps.setEnabled(true);
+				btn_login.setEnabled(true);
 				break;
 			case 1002://start read card
 				CustomDialog.showWaitDialog(mContext, "正在读卡信息...");
@@ -69,7 +86,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					}
 				}).start();
 				break;
-
+			case 1009:
+				CustomDialog.dismissDialog();
+				ToastUtil.showLongToast(mContext, "卡类型错误!");
+				break;
 			default:
 				break;
 			}
@@ -84,7 +104,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			login();
 			break;
 		case R.id.btn_read_card:
-			mHander.sendEmptyMessage(1002);
+			mHandler.sendEmptyMessage(1002);
 			break;
 		default:
 			break;
@@ -104,6 +124,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			int offset = 0;
 			int default_len = 200;
 			result = "";
+			card_password="";
 			int i;
 			for (i = 0; i < 163; i++) {
 				String hexstr = CardManager.read_card(offset, default_len);
@@ -125,9 +146,20 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void login() {
-		Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		LoginActivity.this.startActivity(intent);
+		String password=et_ps.getText().toString();
+		if(TextUtils.isEmpty(password)){
+			ToastUtil.showLongToast(mContext, "请输入密码");
+			return;
+		}
+		
+		if(password.equals(card_password)){
+			Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			LoginActivity.this.startActivity(intent);
+		}else{
+			ToastUtil.showLongToast(mContext, "密码错误");
+			return;
+		}
 
 		// finish();
 	}
@@ -155,10 +187,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					LogUtil.logMessage("wzb", "operName=" + operName);
 					LogUtil.logMessage("wzb", "pwd=" + pwd);
 					LogUtil.logMessage("wzb", "susccess=" + susccess);
-					Message message=mHander.obtainMessage();
-					message.what=1001;
-					message.obj=operName;
-					mHander.sendMessage(message);
+					if(susccess.equals("1")){
+						Message message=mHandler.obtainMessage();
+						message.what=1001;
+						message.obj=operName;
+						mHandler.sendMessage(message);
+						card_password=pwd;
+					}else{
+						mHandler.sendEmptyMessage(1009);
+					}
+					
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

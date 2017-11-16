@@ -86,7 +86,6 @@
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="实际充值xx元"
         android:textSize="24sp"
         android:textColor="@color/red" />
 
