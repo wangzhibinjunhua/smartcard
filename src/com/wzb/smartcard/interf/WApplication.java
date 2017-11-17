@@ -29,7 +29,6 @@ public class WApplication extends Application {
 	 * SP读写工具.
 	 */
 	public static SharedPreferencesUtil sp;
-	public static SharedPreferencesUtil sp_user;
 	/**
 	 * 用户信息.
 	 */
@@ -38,7 +37,7 @@ public class WApplication extends Application {
 	 * 文件根目录
 	 */
 	public static final String BASE_FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath()
-			+ "/Health/";
+			+ "/smartcard/";
 	/**
 	 * 图片文件目录
 	 */
@@ -54,7 +53,7 @@ public class WApplication extends Application {
 	/**
 	 * SP文件名.
 	 */
-	private final String SP_NAME = "hhu";
+	private final String SP_NAME = "smartcard";
 
 	public static SQLiteDatabase db;
 
@@ -66,8 +65,7 @@ public class WApplication extends Application {
 		super.onCreate();
 
 		CONTEXT = getApplicationContext();
-		//sp = new SharedPreferencesUtil(SP_NAME, SharedPreferencesUtil.PRIVATE, CONTEXT);
-		//sp_user = new SharedPreferencesUtil("smartcard_user", SharedPreferencesUtil.PRIVATE, CONTEXT);
+		sp = new SharedPreferencesUtil(SP_NAME, SharedPreferencesUtil.PRIVATE, CONTEXT);
 		LogUtil.openLog(); // 正式发布请注释此程序语句.
 
 	}

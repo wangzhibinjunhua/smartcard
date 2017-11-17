@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.wzb.smartcard.R;
+import com.wzb.smartcard.interf.WApplication;
 import com.wzb.smartcard.util.CardManager;
 import com.wzb.smartcard.util.CustomDialog;
 import com.wzb.smartcard.util.LogUtil;
@@ -90,6 +91,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				CustomDialog.dismissDialog();
 				ToastUtil.showLongToast(mContext, "卡类型错误!");
 				break;
+			case 1008:
+				CustomDialog.dismissDialog();
+				ToastUtil.showLongToast(mContext, "卡校验失败!");
+				break;
+			case 1007:
+				CustomDialog.dismissDialog();
+				ToastUtil.showLongToast(mContext, "读卡失败!");
+				break;
 			default:
 				break;
 			}
@@ -106,6 +115,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		case R.id.btn_read_card:
 			mHandler.sendEmptyMessage(1002);
 			break;
+	
 		default:
 			break;
 
@@ -140,8 +150,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			Thread nt = new Thread(ReadOperationCard);
 			nt.start();
 		} else {
-			CustomDialog.dismissDialog();
-			ToastUtil.showLongToast(mContext, "读卡失败!");
+
+			mHandler.sendEmptyMessage(1008);
 		}
 	}
 
@@ -172,8 +182,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			String res = HttpUtils.httpPostString(url, params);
 			LogUtil.logMessage("wzb", "ReadOperationCard res:" + res);
 			if (res == null) {
-				CustomDialog.dismissDialog();
-				ToastUtil.showLongToast(mContext, "读卡失败!");
+
+				mHandler.sendEmptyMessage(1007);
 			} else {
 				String result_data = res.substring(res.indexOf("{"), res.lastIndexOf("}") + 1);
 				LogUtil.logMessage("wzb", "result:" + result_data);
@@ -193,6 +203,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 						message.obj=operName;
 						mHandler.sendMessage(message);
 						card_password=pwd;
+						WApplication.sp.set("operid", operid);
 					}else{
 						mHandler.sendEmptyMessage(1009);
 					}
@@ -200,6 +211,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					mHandler.sendEmptyMessage(1007);
 				}
 			}
 

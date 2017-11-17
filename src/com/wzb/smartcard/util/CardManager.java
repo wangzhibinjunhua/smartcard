@@ -15,7 +15,7 @@ public class CardManager {
 		byte[] state=new byte[2];
 		String res = "";
 		String cmd="00B0"+numToHex16(offset)+numToHex8(len);
-		LogUtil.logMessage("wzb", "cmd:"+cmd);
+		LogUtil.logMessage("wzb", "read_card cmd:"+cmd);
 		int rsp_len=iccM.apduTransmit(Convert.hexStringToByteArray(cmd), Convert.hexStringToByteArray(cmd).length, rsp, state);
 		if(rsp_len<=0){
 			LogUtil.logMessage("wzb", "rsp_len err:"+rsp_len);
@@ -24,6 +24,22 @@ public class CardManager {
 		LogUtil.logMessage("wzb", "read card rsp len:"+rsp_len);
 		return Convert.bytesToHexString(rsp,0,rsp_len-2);
 		
+	}
+	
+	public static String write_card(int offset,int len ,String datahexstr){
+		byte[] rsp=new byte[256];
+		byte[] state=new byte[2];
+		String res = "";
+		String cmd="00D6"+numToHex16(offset)+numToHex8(len)+datahexstr;
+		LogUtil.logMessage("wzb", "write_card cmd:"+cmd);
+		int rsp_len=iccM.apduTransmit(Convert.hexStringToByteArray(cmd), Convert.hexStringToByteArray(cmd).length, rsp, state);
+		if(rsp_len<=0){
+			LogUtil.logMessage("wzb", "rsp_len err:"+rsp_len);
+			return res;
+		}
+		LogUtil.logMessage("wzb", "write_card rsp:"+Convert.bytesToHexString(rsp,0,rsp_len));
+		LogUtil.logMessage("wzb", "write_card state:"+Convert.bytesToHexString(state,0,2));
+		return Convert.bytesToHexString(state,0,2);
 	}
 	
 	//使用1字节就可以表示b
@@ -65,6 +81,9 @@ public class CardManager {
 		}
 		LogUtil.logMessage("wzb",
 				"11:" + Convert.bytesToHexString(rsl1, 0, rsp1_len) + "/" + Convert.bytesToHexString(sw1, 0, 2));
+		if(!Convert.bytesToHexString(sw1, 0, 2).equals("9000")){
+			return false;
+		}
 		byte[] apdu2 = { (byte) 0x00, (byte) 0xA4, (byte) 0x00, (byte) 0x00, (byte) 0x02, (byte) 0xDF, (byte) 0x01 };
 		byte[] rsl2 = new byte[1024];
 		byte[] sw2 = new byte[1024];
@@ -74,6 +93,9 @@ public class CardManager {
 			return false;
 		}
 		LogUtil.logMessage("wzb", "22:" + Convert.bytesToHexString(rsl2,0,rsp2_len) + "/" + Convert.bytesToHexString(sw2,0,2));
+		if(!Convert.bytesToHexString(sw2,0,2).equals("9000")){
+			return false;
+		}
 		byte[] akey = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		if (Authenticate_CPU(1, akey)) {
 			byte[] apdu3 = { (byte) 0x00, (byte) 0xA4, (byte) 0x00, (byte) 0x00, (byte) 0x02, (byte) 0x00,
@@ -86,6 +108,9 @@ public class CardManager {
 				resbool=false;
 			}else{
 				LogUtil.logMessage("wzb", "33:" + Convert.bytesToHexString(rsl3,0,rsp3_len) + "/" + Convert.bytesToHexString(sw3,0,2));
+				if(!Convert.bytesToHexString(sw3,0,2).equals("9000")){
+					return false;
+				}
 				resbool = true;
 			}
 		
@@ -126,8 +151,15 @@ public class CardManager {
 		byte[] apdu4 = hexStringToBytes(authInfo);
 		byte[] rsl4 = new byte[1024];
 		byte[] sw4 = new byte[2];
-		if (iccM.apduTransmit(apdu4, apdu4.length, rsl4, sw4) > 0) {
-			return true;
+		int rsp4_len=iccM.apduTransmit(apdu4, apdu4.length, rsl4, sw4);
+		if (rsp4_len > 0) {
+			LogUtil.logMessage("wzb", "44:" + Convert.bytesToHexString(rsl4,0,rsp4_len) + "/" + Convert.bytesToHexString(sw4,0,2));
+			if(Convert.bytesToHexString(sw4,0,2).equals("9000")){
+				return true;
+			}else{
+				//return false;
+				return true;//for test
+			}
 		} else {
 			return false;
 		}

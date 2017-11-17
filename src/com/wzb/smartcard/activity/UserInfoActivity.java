@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.wzb.smartcard.R;
+import com.wzb.smartcard.interf.WApplication;
 import com.wzb.smartcard.util.CardManager;
 import com.wzb.smartcard.util.CustomDialog;
 import com.wzb.smartcard.util.LogUtil;
@@ -76,6 +77,7 @@ public class UserInfoActivity extends BaseActivity {
 				intent.putExtra("debt_amount", debt_amount);
 				intent.putExtra("debt_details", amount_details);
 				startActivity(intent);
+				finish();
 			}
 		});
 		
@@ -123,7 +125,11 @@ public class UserInfoActivity extends BaseActivity {
 				break;
 			case 1008:
 				CustomDialog.dismissDialog();
-				ToastUtil.showLongToast(mContext, "请检测卡是否正常插入!");
+				ToastUtil.showLongToast(mContext, "卡校验失败!");
+				break;
+			case 1007:
+				CustomDialog.dismissDialog();
+				ToastUtil.showLongToast(mContext, "读卡失败!");
 				break;
 			default:
 				break;
@@ -171,8 +177,7 @@ public class UserInfoActivity extends BaseActivity {
 			String res = HttpUtils.httpPostString(url, params);
 			LogUtil.logMessage("wzb", "UserInfo res:" + res);
 			if (res == null) {
-				CustomDialog.dismissDialog();
-				ToastUtil.showLongToast(mContext, "读卡失败!");
+				mHandler.sendEmptyMessage(1007);
 			} else {
 				String result_data = res.substring(res.indexOf("{"), res.lastIndexOf("}") + 1);
 				LogUtil.logMessage("wzb", "result:" + result_data);
@@ -180,6 +185,7 @@ public class UserInfoActivity extends BaseActivity {
 					JSONObject result_json = new JSONObject(result_data);
 					String susccess = result_json.getString("Success");
 					if (susccess.equals("1")) {
+					//if(true){//test
 						String CustomerId = result_json.getString("CustomerId");
 						String CustomerName = result_json.getString("CustomerName");
 						String NationalId = result_json.getString("NationalId");
@@ -202,18 +208,20 @@ public class UserInfoActivity extends BaseActivity {
 						
 						debt_amount=DebtAmount;
 						amount_details=DebtDetails;
+						WApplication.sp.set("cid", CustomerId);
 						Message message=mHandler.obtainMessage();
 						message.what=1001;
 						message.obj=show_info;
 						
 						mHandler.sendMessage(message);
 								
-					}else{
+					} else {
 						mHandler.sendEmptyMessage(1009);
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					mHandler.sendEmptyMessage(1007);
 				}
 			}
 
