@@ -2,8 +2,11 @@ package com.wzb.smartcard.util;
 
 import java.util.logging.LogManager;
 
+import org.w3c.dom.Text;
+
 import android.R.integer;
 import android.device.IccManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class CardManager {
@@ -134,20 +137,22 @@ public class CardManager {
 		if (indexStr.length() < 2) {
 			indexStr = "0" + indexStr;
 		}
-		String authKeyStr = ByteToHexString(authKey, authKey.length);
+		//String authKeyStr = ByteToHexString(authKey, authKey.length);
 		String authInfo = null;
-		try {
-			authInfo = TripleDES.encryptToBase64(clgHex, authKeyStr);
-		} catch (Exception e) {
-			LogUtil.logMessage("wzb", "TripleDES exception:"+e.toString());
+//		try {
+//			authInfo = TripleDES.encryptToBase64(clgHex, authKey);
+//		} catch (Exception e) {
+//			LogUtil.logMessage("wzb", "TripleDES exception:"+e.toString());
+//			return false;
+//		}
+		authInfo=TripleDES.encodeToHexStr(clgHex, authKey);
+		
+		LogUtil.logMessage("wzb", "authinfo:" + authInfo);
+		if(TextUtils.isEmpty(authInfo)){
 			return false;
 		}
-		LogUtil.logMessage("wzb", "authinfo:" + authInfo);
 		// 下发认证信息
-		//authInfo = "008200" + indexStr + "08" + authInfo;
-		authInfo = "008200" + indexStr + "08" + Common.str2HexStr(authInfo);
-		short rlen = 0;
-		// StringBuilder sb = new StringBuilder(1024);
+		authInfo = "008200" + indexStr + "08" + authInfo;
 
 		byte[] apdu4 = hexStringToBytes(authInfo);
 		byte[] rsl4 = new byte[1024];
@@ -175,6 +180,7 @@ public class CardManager {
 		if(rsp_len<=0){
 			return res;
 		}
+		LogUtil.logMessage("wzb", "GetChallenge rs:"+Convert.bytesToHexString(rsl3, 0, rsp_len)+"/status:"+Convert.bytesToHexString(sw3, 0,2));
 		res = Convert.bytesToHexString(rsl3, 0, rsp_len-2);
 		return res;
 
