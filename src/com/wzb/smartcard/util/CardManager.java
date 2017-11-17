@@ -144,7 +144,8 @@ public class CardManager {
 		}
 		LogUtil.logMessage("wzb", "authinfo:" + authInfo);
 		// 下发认证信息
-		authInfo = "008200" + indexStr + "08" + authInfo;
+		//authInfo = "008200" + indexStr + "08" + authInfo;
+		authInfo = "008200" + indexStr + "08" + Common.str2HexStr(authInfo);
 		short rlen = 0;
 		// StringBuilder sb = new StringBuilder(1024);
 
@@ -157,8 +158,8 @@ public class CardManager {
 			if(Convert.bytesToHexString(sw4,0,2).equals("9000")){
 				return true;
 			}else{
-				//return false;
-				return true;//for test
+				return false;
+				//return true;//for test
 			}
 		} else {
 			return false;
