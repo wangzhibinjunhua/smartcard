@@ -36,7 +36,7 @@ public class TripleDES {
 		
 		Key key = null;
 		try {
-			DESKeySpec keySpec = new DESKeySpec(customkey);
+			DESKeySpec keySpec = new DESKeySpec(customkey);// 设置密钥参数
 			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");// 获得密钥工厂
 			key = keyFactory.generateSecret(keySpec);// 得到密钥对象
 
@@ -51,7 +51,7 @@ public class TripleDES {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return "";
-		} // 设置密钥参数
+		} 
 	}
 
 	public static String encryptToBase64(String plainText, byte[] key) throws Exception {

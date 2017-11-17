@@ -9,13 +9,16 @@ import org.json.JSONObject;
 
 import com.wzb.smartcard.R;
 import com.wzb.smartcard.interf.WApplication;
+import com.wzb.smartcard.print.PrintBillService;
 import com.wzb.smartcard.util.CardManager;
 import com.wzb.smartcard.util.CustomDialog;
 import com.wzb.smartcard.util.LogUtil;
 import com.wzb.smartcard.util.ToastUtil;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,12 +27,12 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import cn.trinea.android.common.util.HttpUtils;
+import cn.trinea.android.common.util.TimeUtils;
 
 /**
  * @author wzb<wangzhibin_x@qq.com>
@@ -154,6 +157,7 @@ public class DepositActivity extends BaseActivity {
 				ToastUtil.showLongToast(mContext, "充值成功!");
 				Thread nt = new Thread(WriteCardResp);
 				nt.start();
+				show_print();
 				break;
 			case 1103:
 				CustomDialog.dismissDialog();
@@ -164,17 +168,91 @@ public class DepositActivity extends BaseActivity {
 			}
 		};
 	};
+	
+	private BroadcastReceiver mPrtReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            int ret = intent.getIntExtra("ret", 0);
+            CustomDialog.dismissDialog();
+            if(ret == -1){
+            	ToastUtil.showLongToast(mContext, "缺纸");
+            }
+        }
+    };
+    
+    @Override
+    protected void onResume() {
+    	// TODO Auto-generated method stub
+    	super.onResume();
+    	register_broadcast();
+    }
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		unregisterReceiver(mPrtReceiver);
+	}
+	
+	private void show_print(){
+		CustomDialog.showOkAndCalcelDialog(mContext, "打印小票", "充值完成\n\n是否打印详细信息?\n", false, new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				//print
+				CustomDialog.dismissDialog();
+				CustomDialog.showWaitDialog(mContext,"打印中...");
+				print();
+			}
+		}, new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				//exit
+				CustomDialog.dismissDialog();
+				finish();
+			}
+		},"打印","不打印");
+	}
+	
+	private void print(){
+		String msg="";
+		String time="日期: "+TimeUtils.getCurrentTimeInString();
+		String user_name="用户名: "+"xxxx";
+		String phone_number="电话: "+"134*****3456";
+		String icard_number="身份证号码: "+"1231331****123213213";
+		String operid="操作员 ID: "+"123313****213";
+		String sp="\n";
+		String pay="付款金额: "+"100"+"元"+"    "+"债务金额: "+"20"+"元";
+		String debtdetails="债务明细:";
+		String result="净充值金额:"+"80"+"元";
+		msg=time+sp+user_name+sp+icard_number+sp+phone_number+sp+operid+sp+sp+sp+
+				pay+sp+debtdetails+sp+sp+sp+result+sp+sp;
+		LogUtil.logMessage("wzb", "print msg:"+msg);
+		Intent intentService = new Intent(mContext, PrintBillService.class);
+        intentService.putExtra("SPRT", msg);
+        startService(intentService);
+	}
+	
+	private void register_broadcast(){
+		IntentFilter filter = new IntentFilter();
+        filter.addAction("android.prnt.message");
+        registerReceiver(mPrtReceiver, filter);
+	}
 
 	private void write_card() {
 		boolean ret = CardManager.SelectCPU_EF();
 		LogUtil.logMessage("wzb", "write_card ret:" + ret);
 		if (ret) {
 			//test//
-			if(true){
-				byte test[]={(byte)0x00,(byte)0xD6,(byte)0x00,(byte)0x00,(byte)0x01,(byte)0x08};
-				CardManager.write_card(0, 1, "08");
-				return;
-			}
+//			if(true){
+//				byte test[]={(byte)0x00,(byte)0xD6,(byte)0x00,(byte)0x00,(byte)0x01,(byte)0x08};
+//				CardManager.write_card(0, 1, "08");
+//				return;
+//			}
 			//end
 			int offset = 0;
 			int default_len = 180;

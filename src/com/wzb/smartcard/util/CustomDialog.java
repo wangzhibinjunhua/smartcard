@@ -160,6 +160,34 @@ public class CustomDialog {
 		bt_cancel.setOnClickListener(cancleListener);
 		showDefaultDialog(context, view, false);
 	}
+	
+	public static void showOkAndCalcelDialog(Context context, String title, String msg, boolean isShowCancel,
+			View.OnClickListener okListenter, View.OnClickListener cancleListener,String ok,String cancel) {
+		if (context == null) {
+			return;
+		}
+		view = LayoutInflater.from(context).inflate(R.layout.dialog_defalut, null);
+		TextView tv_title, tv_msg, tv_line;
+		Button bt_ok, bt_cancel;
+		tv_title = (TextView) view.findViewById(R.id.txt_dialog_title);
+		tv_msg = (TextView) view.findViewById(R.id.txt_dialog_msg);
+		bt_ok = (Button) view.findViewById(R.id.btn_ok);
+		bt_cancel = (Button) view.findViewById(R.id.btn_cancle);
+		tv_line = (TextView) view.findViewById(R.id.txt_line);
+		if (isShowCancel) {
+			bt_cancel.setVisibility(View.GONE);
+			bt_ok.setBackgroundResource(R.drawable.default_btn_selector1);
+			tv_line.setVisibility(View.GONE);
+		}
+		tv_title.setText(title);
+		tv_msg.setText(msg);
+		bt_ok.setText(ok);
+		bt_cancel.setText(cancel);
+		bt_ok.setOnClickListener(okListenter);
+		bt_cancel.setOnClickListener(cancleListener);
+		showDefaultDialog(context, view, false);
+	}
+
 
 	/**
 	 * 普通对话框

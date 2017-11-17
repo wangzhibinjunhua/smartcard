@@ -57,6 +57,7 @@
             android:name=".activity.DepositActivity"
              android:screenOrientation="portrait"
             />
+          <service android:name="com.wzb.smartcard.print.PrintBillService"></service>
     </application>
 
 </manifest>
