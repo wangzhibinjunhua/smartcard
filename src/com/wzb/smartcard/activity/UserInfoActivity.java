@@ -209,6 +209,8 @@ public class UserInfoActivity extends BaseActivity {
 						debt_amount=DebtAmount;
 						amount_details=DebtDetails;
 						WApplication.sp.set("cid", CustomerId);
+						WApplication.sp.set("cname", CustomerName);
+						WApplication.sp.set("cphone", MobilePhone);
 						Message message=mHandler.obtainMessage();
 						message.what=1001;
 						message.obj=show_info;

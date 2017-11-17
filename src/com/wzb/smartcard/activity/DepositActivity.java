@@ -53,7 +53,10 @@ public class DepositActivity extends BaseActivity {
 	MyTextWathcer myTextWathcer;
 	private String result = "";
 	private float f_deposit_num = 0.0f;
+	private float f_deposit_num_result = 0.0f;
 	private String hexstr = "";
+	private String deposit_num="";
+	private String show_details_info="";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -221,16 +224,20 @@ public class DepositActivity extends BaseActivity {
 	private void print(){
 		String msg="";
 		String time="日期: "+TimeUtils.getCurrentTimeInString();
-		String user_name="用户名: "+"xxxx";
-		String phone_number="电话: "+"134*****3456";
-		String icard_number="身份证号码: "+"1231331****123213213";
-		String operid="操作员 ID: "+"123313****213";
+		String user_name="用户名: "+WApplication.sp.get("cname", "UNKNOW");
+		StringBuilder sb_phone=new StringBuilder(WApplication.sp.get("cphone", "00000000000000"));
+		sb_phone.replace(4, 10, "******");
+		String phone_number="电话: "+sb_phone.toString();
+		StringBuilder sb_cid=new StringBuilder(WApplication.sp.get("cid", "00000000000000"));
+		sb_cid.replace(4, 10, "******");
+		String icard_number="身份证号码: "+sb_cid.toString();
+		String operid="操作员 ID: "+WApplication.sp.get("operid", "00000000000000");
 		String sp="\n";
-		String pay="付款金额: "+"100"+"元"+"    "+"债务金额: "+"20"+"元";
+		String pay="付款金额: "+f_deposit_num+"元"+"    "+"债务金额: "+debt_amount+"元";
 		String debtdetails="债务明细:";
-		String result="净充值金额:"+"80"+"元";
+		String result="净充值金额:"+f_deposit_num_result+"元";
 		msg=time+sp+user_name+sp+icard_number+sp+phone_number+sp+operid+sp+sp+sp+
-				pay+sp+debtdetails+sp+sp+sp+result+sp+sp;
+				pay+sp+debtdetails+sp+show_details_info+sp+sp+result+sp+sp;
 		LogUtil.logMessage("wzb", "print msg:"+msg);
 		Intent intentService = new Intent(mContext, PrintBillService.class);
         intentService.putExtra("SPRT", msg);
@@ -335,15 +342,15 @@ public class DepositActivity extends BaseActivity {
 		JSONArray jsonArray = null;
 		try {
 			jsonArray = new JSONArray(debt_details);
-			String show_info = "DebtName" + sp + "DebtPrice" + "\n" + "\n";
+			show_details_info = "DebtName" + sp + "DebtPrice" + "\n" + "\n";
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				String debt_name = jsonObject.getString("DebtName");
 				String debt_price = jsonObject.getString("DebtPrice");
-				show_info += debt_name + sp + debt_price + "\n" + "\n";
+				show_details_info += debt_name + sp + debt_price + "\n" + "\n";
 			}
-			LogUtil.logMessage("wzb", "details:" + show_info);
-			CustomDialog.showOkAndCalcelDialog(mContext, "DebtDetails", show_info, true, new OnClickListener() {
+			LogUtil.logMessage("wzb", "details:" + show_details_info);
+			CustomDialog.showOkAndCalcelDialog(mContext, "DebtDetails", show_details_info, true, new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
@@ -358,7 +365,8 @@ public class DepositActivity extends BaseActivity {
 	}
 
 	private void deposit() {
-		String deposit_num = et_pay_amount.getText().toString();
+		deposit_num = et_pay_amount.getText().toString();
+	
 		if (TextUtils.isEmpty(deposit_num)) {
 			ToastUtil.showLongToast(mContext, "充值金额不能为空");
 			return;
@@ -366,7 +374,8 @@ public class DepositActivity extends BaseActivity {
 
 		f_deposit_num = Float.parseFloat(deposit_num);
 		float f_debt_amount = Float.parseFloat(debt_amount);
-		if (f_deposit_num < f_debt_amount + 0.0001) {
+		f_deposit_num_result=f_deposit_num-f_debt_amount;
+		if (f_deposit_num_result < 0) {
 			ToastUtil.showLongToast(mContext, "实际充值金额不能为负数");
 			return;
 		}
