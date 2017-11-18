@@ -163,8 +163,8 @@ public class CardManager {
 			if(Convert.bytesToHexString(sw4,0,2).equals("9000")){
 				return true;
 			}else{
-				//return false;
-				return true;//for test
+				return false;
+				//return true;//for test
 			}
 		} else {
 			return false;

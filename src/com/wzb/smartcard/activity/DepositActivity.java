@@ -271,7 +271,7 @@ public class DepositActivity extends BaseActivity {
 						hexstr.substring(hexstr_offset, hexstr_offset + default_len*2));
 				offset += default_len;
 				hexstr_offset=offset*2;
-				if (!status.equals("6982")) {
+				if (!status.equals("9000")) {
 					LogUtil.logMessage("wzb", "write card err");
 					mHandler.sendEmptyMessage(1100);
 					break;
